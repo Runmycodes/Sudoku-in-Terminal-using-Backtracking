@@ -6,13 +6,14 @@ public class Solver extends Board{
         randomize();
     };
 
+    //the fully solved board is copied to puzzleBoard, but not all of it
     void randomize(){
         for(int i = 0; i < 9; i++){
             for(int j = 0; j < 9; j++){
-                if(((int)(Math.random()*3)) == 0){
+                if(((int)(Math.random()*3)) == 0){ //if the random number is 0, the puzzleBoard will be 0 that will leave a dash
                     ++super.dashes;
                     super.puzzleBoard[i][j] = 0;
-                }else{
+                }else{ //otherwise if it's not 0, the number is copied
                     super.puzzleBoard[i][j] = super.board[i][j];
                 }
                 
@@ -36,6 +37,8 @@ public class Solver extends Board{
                     System.out.print("| ");
                 }
                 
+                // this is the main part, other things are decorations
+                // if there is a 0, just add a dash for user to figure what number will be there
                 if(super.puzzleBoard[i][j] != 0){
                     System.out.print(super.puzzleBoard[i][j] + " ");
                 }else{
