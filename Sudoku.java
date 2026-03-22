@@ -1,4 +1,5 @@
 
+// main class
 
 import java.util.*;
 public class Sudoku {
@@ -20,6 +21,7 @@ public class Sudoku {
             
             System.out.println("Enter your position: ");
             String pos = scan.nextLine();
+            // check if the length is not 2, or the numbers aren't in the range of the board
             while( (pos.length() != 2) || pos.charAt(0) < 48 || pos.charAt(0) > 56 || pos.charAt(1) < 48 || pos.charAt(1) > 56 ){
                 if(help(pos)){
                     option = true;
@@ -30,6 +32,7 @@ public class Sudoku {
                     break;
                 }
                 if(load(pos, fs, b)){
+                    //points are reset
                     points = fs.getPoints();
                     b.displayBoard();
                     option = true;
@@ -42,11 +45,17 @@ public class Sudoku {
                 System.out.println("Enter a proper postion: ");
                 pos = scan.nextLine();
             }
-            if(option == true)  continue;
+            if(option == true)  continue; //this ensures that if the user uses special functions like help, save, we go back to the start
+            //this is used to check if the user accidentally selects an already filled block of number
+            if(b.puzzleBoard[pos.charAt(0)-48][pos.charAt(1)-48] != 0){
+                System.out.println("That position already has a value!");
+                continue;
+            }
             
-            
+            //take input the number
             System.out.println("Enter your number: ");
             String num = scan.nextLine();
+            //the number should be length 1 and within 1-9 coz it's a 9x9 board
             while( (num.length() != 1) || (num.charAt(0) < 49 || num.charAt(0) > 57) ){
                 if(help(num)){
                     option = true;
@@ -57,6 +66,7 @@ public class Sudoku {
                     break;
                 }
                 if(load(num, fs, b)){
+                    //points are reset
                     points = fs.getPoints();
                     b.displayBoard();
                     option = true;
@@ -74,12 +84,14 @@ public class Sudoku {
             int row = pos.charAt(0) - 48;
             int col = pos.charAt(1) - 48;
             
+            //if correct add points, reduce dashesh, and add the correct number to the puzzle board
+            //the board is the correct one which we just took some numbers out of to create the puzzle board
             if(b.board[row][col] == (num.charAt(0) - 48)){
                 points += 15;
                 --b.dashes;
                 b.puzzleBoard[row][col] = (num.charAt(0) - 48);
                 System.out.println("Correct!");
-                if(b.dashes == 0){
+                if(b.dashes == 0){ //this means the puzzle board has been filled with correct numbers
                     if(points >= 0){
                         System.out.println("Congratulations! You won the game! Your Points: " + points);
                     }else{
@@ -114,11 +126,13 @@ public class Sudoku {
     }
     static boolean save(String input, FileSaver fs, int points, Board b){
         if(input.equalsIgnoreCase("save")){
+            // This double loop copies the puzzleBoard, at the current time of saving, to the board initialized in the FileSaver class
+            // The FileSaver class will keep this saved board and the no. dashes until it is saved again, where it will be overwritten
             for(int i = 0; i < 9; i++)
                 for(int j = 0; j < 9; j++)
                     fs.puzzle[i][j] = b.puzzleBoard[i][j];
             
-            fs.dashes = b.dashes;
+            fs.dashSave = b.dashes;
             System.out.println("Game has been saved!");
             fs.saveGame(points);
             return true;
@@ -133,7 +147,10 @@ public class Sudoku {
                 System.out.println("There is no save file");
                 return false;
             }else{
-                b.dashes = fs.dashes;
+                b.dashes = fs.dashSave;
+                // Load the previous save, by now the user might have added some numbers and lost some points
+                // The FileSaver has the board so we copy that into the actual puzzle board we are using to display
+                // Also the dashes are reset, the points are also reset in the main function. The previous values are stored in the FileSaver class
                 for(int i = 0; i < 9; i++)
                     for(int j = 0; j < 9; j++)
                         b.puzzleBoard[i][j] = fs.puzzle[i][j];
