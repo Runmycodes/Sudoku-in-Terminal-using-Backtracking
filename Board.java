@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+//This contains the board in which the numbers will be laid out
 public abstract class Board {
-    int dashes;
-    int[][] board = new int[9][9];
-    int[][] puzzleBoard = new int[9][9];
+    int dashes; //the number of gaps in the board, the numbers user will put in
+    int[][] board = new int[9][9]; //the fully solved board
+    int[][] puzzleBoard = new int[9][9]; //board but some numbers are taken out and a dash is put in their place
     
     Board(){
         fillboard(board);
@@ -31,6 +32,7 @@ public abstract class Board {
         return true;
         
     }
+    //this function is done using Backtracking
     boolean fillboard(int[][] board){
         for(int i = 0; i < 9; i++){
             for(int j = 0; j < 9; j++){
@@ -39,12 +41,12 @@ public abstract class Board {
                     Collections.shuffle(arr);
 
                     for(int num: arr){
-                        if(isValid(board, i, j, num)){
+                        if(isValid(board, i, j, num)){ //for each and everynumber check if it can be placed on the board
                             board[i][j] = num;
 
-                            if(fillboard(board))    return true;
+                            if(fillboard(board))    return true; //see if the number placed can then be used with other numbers
 
-                            board[i][j] = 0; //backtrack and set it to 0 if the number doesn't make the sudoku board correct
+                            board[i][j] = 0; //backtrack and set it to 0 if that number is already in that column or row, or more numbers cannot be placed because of it
                         }
                     }
                     return false;
