@@ -1,5 +1,4 @@
 
-
 import java.io.*;
 public class FileSaver extends Solver{
     boolean check = false;
@@ -9,6 +8,7 @@ public class FileSaver extends Solver{
     
     FileSaver(){}
     
+    // this function will save the game, by saving points, dashes, and printing it onto a savefile
     public void saveGame(int points){
         try(PrintWriter pw = new PrintWriter(new FileWriter("SaveFile.txt"))){
             setPoints(points);
@@ -26,6 +26,7 @@ public class FileSaver extends Solver{
                         pw.print("| ");
                     }
 
+                    // printing its own puzzle not its parent array
                     if(puzzle[i][j] != 0){
                         pw.print(puzzle[i][j] + " ");
                     }else{
@@ -37,15 +38,20 @@ public class FileSaver extends Solver{
                 }
                 pw.println();
             }
+            
+            pw.println();
+            pw.println("Your points as of recent save: " + getPoints());
+            pw.println("The no. of dashes left: " + dashSave);
             pw.flush();
             
-        }catch(IOException e){
+        }catch(IOException e){ //check if file cannot be created
             System.out.println("File could not be written");
-        }catch(Exception e){
+        }catch(Exception e){ 
             System.out.println("Something wrong");
         }
     }
     
+    //mutator and accessor..
     public int getPoints(){
         return points;
     }
